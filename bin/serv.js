@@ -24,6 +24,9 @@ opts = require('optimist')
 		default: process.cwd(),
 		description: 'File system path to expose'
 	})
+	.options('proxy', {
+		description: 'When a resource is not found, proxy the request to another server'
+	})
 	.options('public', {
 		boolean: true,
 		description: 'Listen on all available IP addresses'

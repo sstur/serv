@@ -1,23 +1,31 @@
-var http, open, path, express, keypress;
+var http, open, path, express, keypress, httpProxy;
 
 http = require('http');
 open = require('open');
 path = require('path');
 express = require('express');
 keypress = require('keypress');
+httpProxy = require('http-proxy');
 
 module.exports = function serv(opts) {
-	var mount, host, port, app, isUserSpecifiedPort;
+	var mount, host, port, app, isUserSpecifiedPort, proxy;
 
 	mount = path.resolve(opts.path);
 	host = opts.public ? '0.0.0.0' : opts.bind;
 	isUserSpecifiedPort = (typeof opts.port === 'number');
 	port = isUserSpecifiedPort ? opts.port : 8000;
 
+  proxy = opts.proxy ? httpProxy.createProxyServer() : null;
+
 	app = express.createServer();
-	app.configure(function(){
+	app.configure(function() {
 		app.use(express.static(mount));
 		app.use(express.directory(mount));
+    if (opts.proxy) {
+      app.use(function(req, res) {
+        proxy.web(req, res, { target: opts.proxy });
+      });
+    }
 		app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 	});
 
