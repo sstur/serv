@@ -24,6 +24,9 @@ opts = require('optimist')
 		default: process.cwd(),
 		description: 'File system path to expose'
 	})
+	.options('spawn', {
+		description: 'Spawn a child process (useful with --proxy)'
+	})
 	.options('proxy', {
 		description: 'When a resource is not found, proxy the request to another server'
 	})
